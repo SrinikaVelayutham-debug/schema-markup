@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Schema Markup — Aaron Shohet Property</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f4f6f9; color: #1a1a2e; }
+
+  header {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 60%, #0f3460 100%);
+    color: #fff; padding: 40px 48px 36px;
+  }
+  header h1 { font-size: 1.75rem; font-weight: 700; letter-spacing: -0.3px; }
+  header p { margin-top: 8px; color: #a0b4cc; font-size: 0.95rem; }
+  header .badge {
+    display: inline-block; margin-top: 14px; background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.2); border-radius: 20px;
+    padding: 4px 14px; font-size: 0.8rem; color: #c9dcef;
+  }
+
+  .container { max-width: 1000px; margin: 0 auto; padding: 40px 24px 60px; }
+
+  .section { background: #fff; border-radius: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); margin-bottom: 32px; overflow: hidden; }
+
+  .section-header {
+    display: flex; align-items: center; gap: 14px;
+    padding: 20px 28px; border-bottom: 1px solid #eef0f5;
+    background: #f8f9fc;
+  }
+  .section-icon { font-size: 1.5rem; }
+  .section-title { font-size: 1.05rem; font-weight: 700; color: #1a1a2e; }
+  .section-subtitle { font-size: 0.82rem; color: #7a8599; margin-top: 2px; }
+  .tag {
+    margin-left: auto; padding: 3px 10px; border-radius: 20px;
+    font-size: 0.75rem; font-weight: 600; white-space: nowrap;
+  }
+  .tag-ready { background: #e6f9ef; color: #1a8a4a; }
+  .tag-partial { background: #fff4e0; color: #b86a00; }
+
+  .section-body { padding: 24px 28px; }
+
+  .note {
+    background: #f0f4ff; border-left: 3px solid #4a6cf7;
+    border-radius: 0 8px 8px 0; padding: 12px 16px;
+    font-size: 0.83rem; color: #3a4a6b; margin-bottom: 20px; line-height: 1.6;
+  }
+  .note strong { color: #4a6cf7; }
+
+  .fields-table { width: 100%; border-collapse: collapse; font-size: 0.83rem; margin-bottom: 22px; }
+  .fields-table th {
+    text-align: left; padding: 8px 12px; background: #f4f6fa;
+    color: #555d73; font-weight: 600; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.4px;
+    border-bottom: 2px solid #e8ebf2;
+  }
+  .fields-table td { padding: 9px 12px; border-bottom: 1px solid #f0f2f7; vertical-align: top; }
+  .fields-table tr:last-child td { border-bottom: none; }
+  .fields-table .field-name { font-weight: 600; color: #1a1a2e; font-family: monospace; font-size: 0.82rem; }
+  .fields-table .field-value { color: #2e7d32; font-family: monospace; font-size: 0.81rem; word-break: break-all; }
+  .fields-table .field-replace { color: #b86a00; font-family: monospace; font-size: 0.81rem; }
+  .chip {
+    display: inline-block; padding: 2px 8px; border-radius: 10px;
+    font-size: 0.7rem; font-weight: 600;
+  }
+  .chip-ready { background: #e6f9ef; color: #1a8a4a; }
+  .chip-replace { background: #fff4e0; color: #b86a00; }
+  .chip-optional { background: #e8f0fe; color: #3a6bc4; }
+
+  .json-label {
+    font-size: 0.78rem; font-weight: 700; color: #7a8599; text-transform: uppercase;
+    letter-spacing: 0.5px; margin-bottom: 8px;
+  }
+  pre {
+    background: #1a1a2e; color: #e2e8f0; border-radius: 8px;
+    padding: 20px 22px; font-size: 0.8rem; line-height: 1.7;
+    overflow-x: auto; white-space: pre;
+  }
+  .key { color: #7dd3fc; }
+  .str { color: #86efac; }
+  .num { color: #fbbf24; }
+  .bool { color: #f87171; }
+
+  .divider { height: 1px; background: #eef0f5; margin: 22px 0; }
+
+  .validate-bar {
+    background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px;
+    padding: 12px 18px; font-size: 0.83rem; color: #166534; margin-top: 22px;
+  }
+  .validate-bar a { color: #166534; font-weight: 600; }
+
+  .toc {
+    background: #fff; border-radius: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    padding: 24px 28px; margin-bottom: 32px;
+  }
+  .toc h2 { font-size: 0.9rem; font-weight: 700; color: #7a8599; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 14px; }
+  .toc ol { list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .toc li a {
+    display: flex; align-items: center; gap: 8px;
+    color: #1a1a2e; text-decoration: none; font-size: 0.88rem;
+    padding: 6px 10px; border-radius: 6px; transition: background 0.15s;
+  }
+  .toc li a:hover { background: #f4f6fa; }
+  .toc li a .toc-icon { font-size: 1rem; }
+
+  @media (max-width: 600px) {
+    header { padding: 28px 20px; }
+    .container { padding: 24px 14px 40px; }
+    .section-body, .section-header { padding: 16px 18px; }
+    .toc ol { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Schema Markup Implementation Guide</h1>
+  <p>Aaron Shohet Property &nbsp;·&nbsp; aaronshohetproperty.com</p>
+  <span class="badge">Structured Data · All Pages · May 2026</span>
+</header>
+
+<div class="container">
+
+  <!-- TABLE OF CONTENTS -->
+  <div class="toc">
+    <h2>Pages Covered</h2>
+    <ol>
+      <li><a href="#homepage"><span class="toc-icon">🏠</span> Homepage</a></li>
+      <li><a href="#contact"><span class="toc-icon">📞</span> Contact Page</a></li>
+      <li><a href="#search-sale"><span class="toc-icon">🔍</span> Properties for Sale</a></li>
+      <li><a href="#search-let"><span class="toc-icon">🔍</span> Properties to Let</a></li>
+      <li><a href="#property-detail"><span class="toc-icon">🏡</span> Property Detail (Sample)</a></li>
+      <li><a href="#about"><span class="toc-icon">👤</span> About Us</a></li>
+      <li><a href="#services"><span class="toc-icon">⚙️</span> Services</a></li>
+      <li><a href="#valuation"><span class="toc-icon">📊</span> Valuation</a></li>
+    </ol>
+  </div>
+
+  <!-- ===================== HOMEPAGE ===================== -->
+  <div class="section" id="homepage">
+    <div class="section-header">
+      <span class="section-icon">🏠</span>
+      <div>
+        <div class="section-title">Homepage Schema</div>
+        <div class="section-subtitle">RealEstateAgent · https://www.aaronshohetproperty.com/</div>
+      </div>
+      <span class="tag tag-partial">1 field to update</span>
+    </div>
+    <div class="section-body">
+      <div class="note">
+        Add this to the <strong>&lt;head&gt;</strong> of the homepage inside a <strong>&lt;script type="application/ld+json"&gt;</strong> tag.
+        Only the Instagram sameAs link was found — add Facebook/Twitter/LinkedIn if available.
+      </div>
+      <div class="json-label">Ready-to-paste JSON</div>
+<pre>{
+  <span class="key">"@context"</span>: <span class="str">"https://schema.org"</span>,
+  <span class="key">"@type"</span>: <span class="str">"RealEstateAgent"</span>,
+  <span class="key">"name"</span>: <span class="str">"Aaron Shohet Property"</span>,
+  <span class="key">"url"</span>: <span class="str">"https://www.aaronshohetproperty.com"</span>,
+  <span class="key">"logo"</span>: <span class="str">"https://www.aaronshohetproperty.com/templates/responsive-theme-six/images/logo.png"</span>,
+  <span class="key">"image"</span>: <span class="str">"https://www.aaronshohetproperty.com/templates/responsive-theme-six/images/logo.png"</span>,
+  <span class="key">"description"</span>: <span class="str">"Aaron Shohet Property in Millbrook Park, London. Providing property sales and letting services."</span>,
+  <span class="key">"address"</span>: {
+    <span class="key">"@type"</span>: <span class="str">"PostalAddress"</span>,
+    <span class="key">"streetAddress"</span>: <span class="str">"82 Bittacy Hill"</span>,
+    <span class="key">"addressLocality"</span>: <span class="str">"London"</span>,
+    <span class="key">"addressRegion"</span>: <span class="str">"Millbrook Park"</span>,
+    <span class="key">"postalCode"</span>: <span class="str">"NW7 1TH"</span>,
+    <span class="key">"addressCountry"</span>: <span class="str">"GB"</span>
+  },
+  <span class="key">"geo"</span>: {
+    <span class="key">"@type"</span>: <span class="str">"GeoCoordinates"</span>,
+    <span class="key">"latitude"</span>: <span class="num">51.6143</span>,
+    <span class="key">"longitude"</span>: <span class="num">-0.2193</span>
+  },
+  <span class="key">"hasMap"</span>: <span class="str">"https://www.google.com/maps?q=Aaron+Shohet+Property+82+Bittacy+Hill+London+NW7+1TH"</span>,
+  <span class="key">"sameAs"</span>: [
+    <span class="str">"https://www.instagram.com/aaronshohetproperty"</span>
+  ]
+}</pre>
+      <div class="validate-bar">✅ Validate at <a href="https://validator.schema.org" target="_blank">validator.schema.org</a> or <a href="https://search.google.com/test/rich-results" target="_blank">Google Rich Results Test</a></div>
+    </div>
+  </div>
+
+  <!-- ===================== CONTACT PAGE ===================== -->
+  <div class="section" id="contact">
+    <div class="section-header">
+      <span class="section-icon">📞</span>
+      <div>
+        <div class="section-title">Contact Page Schema</div>
+        <div class="section-subtitle">RealEstateAgent · https://www.aaronshohetproperty.com/contact-us</div>
+      </div>
+      <span class="tag tag-ready">Ready to use</span>
+    </div>
+    <div class="section-body">
+      <div class="note">
+        Add to the <strong>/contact-us</strong> page. Opens 24/7 as stated on the site. No aggregate rating score
+        is published on the site — add <strong>ratingValue</strong> and <strong>reviewCount</strong> once you have numeric data.
+      </div>
+      <div class="json-label">Ready-to-paste JSON</div>
+<pre>{
+  <span class="key">"@context"</span>: <span class="str">"https://schema.org"</span>,
+  <span class="key">"@type"</span>: <span class="str">"RealEstateAgent"</span>,
+  <span class="key">"name"</span>: <span class="str">"Aaron Shohet Property"</span>,
+  <span class="key">"legalName"</span>: <span class="str">"Jash Homes Ltd"</span>,
+  <span class="key">"url"</span>: <span class="str">"https://www.aaronshohetproperty.com"</span>,
+  <span class="key">"logo"</span>: <span class="str">"https://www.aaronshohetproperty.com/templates/responsive-theme-six/images/logo.png"</span>,
+  <span class="key">"description"</span>: <span class="str">"Contact Aaron Shohet Property — independent estate agents specialising in Millbrook Park, Mill Hill and Hertfordshire property sales and lettings."</span>,
+  <span class="key">"address"</span>: {
+    <span class="key">"@type"</span>: <span class="str">"PostalAddress"</span>,
+    <span class="key">"streetAddress"</span>: <span class="str">"82 Bittacy Hill"</span>,
+    <span class="key">"addressLocality"</span>: <span class="str">"London"</span>,
+    <span class="key">"addressRegion"</span>: <span class="str">"Millbrook Park"</span>,
+    <span class="key">"postalCode"</span>: <span class="str">"NW7 1TH"</span>,
+    <span class="key">"addressCountry"</span>: <span class="str">"GB"</span>
+  },
+  <span class="key">"telephone"</span>: <span class="str">"+447388778139"</span>,
+  <span class="key">"email"</span>: <span class="str">"aaron@aaronshohetproperty.com"</span>,
+  <span class="key">"openingHoursSpecification"</span>: {
+    <span class="key">"@type"</span>: <span class="str">"OpeningHoursSpecification"</span>,
+    <span class="key">"dayOfWeek"</span>: [
+      <span class="str">"Monday"</span>, <span class="str">"Tuesday"</span>, <span class="str">"Wednesday"</span>,
+      <span class="str">"Thursday"</span>, <span class="str">"Friday"</span>, <span class="str">"Saturday"</span>, <span class="str">"Sunday"</span>
+    ],
+    <span class="key">"opens"</span>: <span class="str">"00:00"</span>,
+    <span class="key">"closes"</span>: <span class="str">"23:59"</span>
+  },
+  <span class="key">"contactPoint"</span>: {
+    <span class="key">"@type"</span>: <span class="str">"ContactPoint"</span>,
+    <span class="key">"contactType"</span>: <span class="str">"Customer Service"</span>,
+    <span class="key">"telephone"</span>: <span class="str">"+447388778139"</span>,
+    <span class="key">"email"</span>: <span class="str">"aaron@aaronshohetproperty.com"</span>,
+    <span class="key">"availableLanguage"</span>: <span class="str">"English"</span>
+  },
+  <span class="key">"sameAs"</span>: [
+    <span class="str">"https://www.instagram.com/aaronshohetproperty"</span>
+  ]
+}</pre>
+      <div class="validate-bar">✅ Validate at <a href="https://validator.schema.org" target="_blank">validator.schema.org</a></div>
+    </div>
+  </div>
+
+  <!-- ===================== PROPERTIES FOR SALE ===================== -->
+  <div class="section" id="search-sale">
+    <div class="section-header">
+      <span class="section-icon">🔍</span>
+      <div>
+        <div class="section-title">Properties for Sale — Search Results Page</div>
+        <div class="section-subtitle">SearchResultsPage · https://www.aaronshohetproperty.com/properties-for-sale</div>
+      </div>
+      <span class="tag tag-ready">Ready to use</span>
+    </div>
+    <div class="section-body">
+      <div class="note">
+        <strong>59 total properties</strong> found across 5 pages. The <code>itemListElement</code> below lists the 12 properties
+        from page 1. When rendering dynamically, regenerate this array to match whichever page is being viewed.
+        <code>numberOfItems</code> should always reflect the <em>total</em> results (59), not the per-page count.
+      </div>
+      <div class="json-label">Ready-to-paste JSON</div>
+<pre>{
+  <span class="key">"@context"</span>: <span class="str">"https://schema.org"</span>,
+  <span class="key">"@type"</span>: <span class="str">"SearchResultsPage"</span>,
+  <span class="key">"publisher"</span>: {
+    <span class="key">"@type"</span>: <span class="str">"Corporation"</span>,
+    <span class="key">"name"</span>: <span class="str">"Aaron Shohet Property"</span>,
+    <span class="key">"logo"</span>: {
+      <span class="key">"@type"</span>: <span class="str">"ImageObject"</span>,
+      <span class="key">"url"</span>: <span class="str">"https://www.aaronshohetproperty.com/templates/responsive-theme-six/images/logo.png"</span>,
+      <span class="key">"width"</span>: <span class="num">243</span>,
+      <span class="key">"height"</span>: <span class="num">50</span>
+    }
+  },
+  <span class="key">"mainEntity"</span>: {
+    <span class="key">"@type"</span>: <span class="str">"ItemList"</span>,
+    <span class="key">"numberOfItems"</span>: <span class="num">59</span>,
+    <span class="key">"name"</span>: <span class="str">"Properties for Sale in Millbrook Park with Aaron Shohet Property"</span>,
+    <span class="key">"description"</span>: <span class="str">"Properties for sale in Millbrook Park and surrounding areas within London."</span>,
+    <span class="key">"itemListElement"</span>: [
+      {
+        <span class="key">"@type"</span>: <span class="str">"ListItem"</span>,
+        <span class="key">"position"</span>: <span class="num">1</span>,
+        <span class="key">"url"</span>: <span class="str">"https://www.aaronshohetproperty.com/properties-for-sale/property/135-marloes-road-kensington-london"</span>,
+        <span class="key">"name"</span>: <span class="str">"4 bed mid-terrace house, Marloes Road, Kensington, London — £5,999,950"</span>
+      },
+      {
+        <span class="key">"@type"</span>: <span class="str">"ListItem"</span>,
+        <span class="key">"position"</span>: <span class="num">2</span>,
+        <span class="key">"url"</span>: <span class="str">"https://www.aaronshohetproperty.com/properties-for-sale/property/1177-guardhouse-way-london"</span>,
+        <span class="key">"name"</span>: <span class="str">"5 bed link-detached house, Guardhouse Way, London — £1,325,000"</span>
+      },
+      {
+        <span class="key">"@type"</span>: <span class="str">"ListItem"</span>,
+        <span class="key">"position"</span>: <span class="num">3</span>,
+        <span class="key">"url"</span>: <span class="str">"https://www.aaronshohetproperty.com/properties-for-sale/property/95-irwin-close-millbrook-park-mill-hill-east"</span>,
+        <span class="key">"name"</span>: <span class="str">"5 bed link-detached house, Irwin Close, Millbrook Park — Guide £1,290,000"</span>
+      },
+      {
+        <span class="key">"@type"</span>: <span class="str">"ListItem"</span>,
+        <span class="key">"position"</span>: <span class="num">4</span>,
+        <span class="key">"url"</span>: <span class="str">"https://www.aaronshohetproperty.com/properties-for-sale/property/55-guardhouse-way-millbrook-park-mill-hill-east"</span>,
+        <span class="key">"name"</span>: <span class="str">"4 bed family home, Guardhouse Way, Millbrook Park — Guide £1,199,950"</span>
+      },
+      {
+        <span class="key">"@type"</span>: <span class="str">"ListItem"</span>,
+        <span class="key">"position"</span>: <span class="num">5</span>,
+        <span class="key">"url"</span>: <span class="str">"https://www.aaronshohetproperty.com/properties-for-sale/property/47-inglis-way-london"</span>,
+        <span class="key">"name"</span>: <span class="str">"4 bed townhouse, Inglis Way, London — £1,150,000"</span>
+      },
+      {
+        <span class="key">"@type"</span>: <span class="str">"ListItem"</span>,
+        <span class="key">"position"</span>: <span class="num">6</span>,
+        <span class="key">"url"</span>: <span class="str">"https://www.aaronshohetproperty.com/properties-for-sale/property/32-henry-darlot-drive-millbrook-park-mill-hill-east"</span>,
+        <span class="key">"name"</span>: <span class="str">"3 bed end-of-terrace townhouse, Henry Darlot Drive, Millbrook Park — £1,100,000"</span>
+      },
+      {
+        <span class="key">"@type"</span>: <span class="str">"ListItem"</span>,
+        <span class="key">"position"</span>: <span class="num">7</span>,
+        <span class="key">"url"</span>: <span class="str">"https://www.aaronshohetproperty.com/properties-for-sale/property/1147-peter-collinson-vale-millbrook-park-mill-hill-east"</span>,
+        <span class="key">"name"</span>: <span class="str">"5 bed detached house, Peter Collinson Vale, Millbrook Park — £1,099,950"</span>
+      },
+      {
+        <span class="key">"@type"</span>: <span class="str">"ListItem"</span>,
+        <span class="key">"position"</span>: <span class="num">8</span>,
+        <span class="key">"url"</span>: <span class="str">"https://www.aaronshohetproperty.com/properties-for-sale/property/1160-cuneo-mews-london"</span>,
+        <span class="key">"name"</span>: <span class="str">"4 bed detached house, Cuneo Mews, London — £1,075,000"</span>
+      },
+      {
+        <span class="key">"@type"</span>: <span class="str">"ListItem"</span>,
+        <span class="key">"position"</span>: <span class="num">9</span>,
+        <span class="key">"url"</span>: <span class="str">"https://www.aaronshohetproperty.com/properties-for-sale/property/1145-maurice-browne-avenue-millbrook-park-mill-hill-east"</span>,
+        <span class="key">"name"</span>: <span class="str">"4 bed house, Maurice Browne Avenue, Millbrook Park — £1,050,000"</span>
+      },
+      {
+        <span class="key">"@type"</span>: <span class="str">"ListItem"</span>,
+        <span class="key">"position"</span>: <span class="num">10</span>,
+        <span class="key">"url"</span>: <span class="str">"https://www.aaronshohetproperty.com/properties-for-sale/property/1159-charles-sevright-way-london"</span>,
+        <span class="key">"name"</span>: <span class="str">"4 bed family home, Charles Sevright Way, London — £1,050,000"</span>
+      },
+      {
+        <span class="key">"@type"</span>: <span class="str">"ListItem"</span>,
+        <span class="key">"position"</span>: <span class="num">11</span>,
+        <span class="key">"url"</span>: <span class="str">"https://www.aaronshohetproperty.com/properties-for-sale/property/1174-phelps-lane-london"</span>,
+        <span class="key">"name"</span>: <span class="str">"4 bed semi-detached house, Phelps Lane, London — £999,950"</span>
+      },
+      {
+        <span class="key">"@type"</span>: <span class="str">"ListItem"</span>,
+        <span class="key">"position"</span>: <span class="num">12</span>,
+        <span class="key">"url"</span>: <span class="str">"https://www.aaronshohetproperty.com/properties-for-sale/property/50-lidbury-grove-millbrook-park-mill-hill-east"</span>,
+        <span class="key">"name"</span>: <span class="str">"3 bed detached house, Lidbury Grove, Millbrook Park — Guide £899,950"</span>
+      }
+    ]
+  }
+}</pre>
+      <div class="validate-bar">✅ Validate at <a href="https://validator.schema.org" target="_blank">validator.schema.org</a></div>
+    </div>
+  </div>
+
+  <!-- ===================== PROPERTIES TO LET ===================== -->
+  <div class="section" id="search-let">
+    <div class="section-header">
+      <span class="section-icon">🔍</span>
+      <div>
+        <div class="section-title">Properties to Let — Search Results Page</div>
+        <div class="section-subtitle">SearchResultsPage · https://www.aaronshohetproperty.com/properties-to-let</div>
+      </div>
+      <span class="tag tag-partial">Update item list dynamically</span>
+    </div>
+    <div class="section-body">
+      <div class="note">
+        Update <strong>numberOfItems</strong> with the live total from your letting search results,
+        and populate <strong>itemListElement</strong> with the current page's listings at render time.
+        The 3 sample properties below are taken from the homepage featured listings.
+      </div>
+      <div class="json-label">Ready-to-paste JSON (update item list per page)</div>
+<pre>{
+  <span class="key">"@context"</span>: <span class="str">"https://schema.org"</span>,
+  <span class="key">"@type"</span>: <span class="str">"SearchResultsPage"</span>,
+  <span class="key">"publisher"</span>: {
+    <span class="key">"@type"</span>: <span class="str">"Corporation"</span>,
+    <span class="key">"name"</span>: <span class="str">"Aaron Shohet Property"</span>,
+    <span class="key">"logo"</span>: {
+      <span class="key">"@type"</span>: <span class="str">"ImageObject"</span>,
+      <span class="key">"url"</span>: <span class="str">"https://www.aaronshohetproperty.com/templates/responsive-theme-six/images/logo.png"</span>,
+      <span class="key">"width"</span>: <span class="num">243</span>,
+      <span class="key">"height"</span>: <span class="num">50</span>
+    }
+  },
+  <span class="key">"mainEntity"</span>: {
+    <span class="key">"@type"</span>: <span class="str">"ItemList"</span>,
+    <span class="key">"numberOfItems"</span>: <span class="str">"[REPLACE: total letting properties count]"</span>,
+    <span class="key">"name"</span>: <span class="str">"Properties to Let in Millbrook Park with Aaron Shohet Property"</span>,
+    <span class="key">"description"</span>: <span class="str">"Rental properties available to let in Millbrook Park, Mill Hill and surrounding London areas."</span>,
+    <span class="key">"itemListElement"</span>: [
+      {
+        <span class="key">"@type"</span>: <span class="str">"ListItem"</span>,
+        <span class="key">"position"</span>: <span class="num">1</span>,
+        <span class="key">"url"</span>: <span class="str">"https://www.aaronshohetproperty.com/properties-to-let/property/1176-334-regents-park-road-london"</span>,
+        <span class="key">"name"</span>: <span class="str">"2 bed apartment, 334 Regents Park Road, London — £2,400 PCM"</span>
+      },
+      {
+        <span class="key">"@type"</span>: <span class="str">"ListItem"</span>,
+        <span class="key">"position"</span>: <span class="num">2</span>,
+        <span class="key">"url"</span>: <span class="str">"https://www.aaronshohetproperty.com/properties-to-let/property/1175-82-bittacy-hill-mill-hill-east"</span>,
+        <span class="key">"name"</span>: <span class="str">"1 bed apartment, 82 Bittacy Hill, Mill Hill East — £1,995 PCM"</span>
+      }
+    ]
+  }
+}</pre>
+      <div class="validate-bar">✅ Validate at <a href="https://validator.schema.org" target="_blank">validator.schema.org</a></div>
+    </div>
+  </div>
+
+  <!-- ===================== PROPERTY DETAIL ===================== -->
+  <div class="section" id="property-detail">
+    <div class="section-header">
+      <span class="section-icon">🏡</span>
+      <div>
+        <div class="section-title">Property Detail Page — Sample</div>
+        <div class="section-subtitle">SingleFamilyResidence · Guardhouse Way, London NW7 1FX</div>
+      </div>
+      <span class="tag tag-ready">Template — repeat per listing</span>
+    </div>
+    <div class="section-body">
+      <div class="note">
+        This is a fully populated example using the <strong>Guardhouse Way</strong> listing (ref 34682207).
+        Use this as a template for every individual property page — swap the values in each listing.
+        The <strong>photo</strong> URL is from the site's CDN OG image tag.
+      </div>
+      <div class="json-label">Ready-to-paste JSON — Guardhouse Way sample</div>
+<pre>{
+  <span class="key">"@context"</span>: <span class="str">"https://schema.org"</span>,
+  <span class="key">"@type"</span>: <span class="str">"SingleFamilyResidence"</span>,
+  <span class="key">"name"</span>: <span class="str">"5 Bedroom Link-Detached House, Guardhouse Way, London NW7 1FX"</span>,
+  <span class="key">"address"</span>: {
+    <span class="key">"@type"</span>: <span class="str">"PostalAddress"</span>,
+    <span class="key">"streetAddress"</span>: <span class="str">"Guardhouse Way"</span>,
+    <span class="key">"addressLocality"</span>: <span class="str">"London"</span>,
+    <span class="key">"addressRegion"</span>: <span class="str">"Millbrook Park"</span>,
+    <span class="key">"postalCode"</span>: <span class="str">"NW7 1FX"</span>,
+    <span class="key">"addressCountry"</span>: <span class="str">"GB"</span>
+  },
+  <span class="key">"description"</span>: <span class="str">"A truly remarkable five-bedroom link-detached family home on one of Millbrook Park's most desirable turnings. Built in 2017 by Taylor Wimpey, extending to approximately 2,500 sq ft, thoughtfully upgraded throughout with open-plan kitchen, landscaped rear garden, principal suite with walk-in wardrobe and en-suite, and private driveway for 2–3 vehicles."</span>,
+  <span class="key">"photo"</span>: <span class="str">"https://cdns3.estateweb.com/assets/9802/of/4/pro/34682207/main/1.jpg"</span>,
+  <span class="key">"mainEntityOfPage"</span>: {
+    <span class="key">"@type"</span>: <span class="str">"ItemPage"</span>,
+    <span class="key">"@id"</span>: <span class="str">"https://www.aaronshohetproperty.com/properties-for-sale/property/1177-guardhouse-way-london"</span>
+  },
+  <span class="key">"floorSize"</span>: {
+    <span class="key">"@type"</span>: <span class="str">"QuantitativeValue"</span>,
+    <span class="key">"value"</span>: <span class="num">232</span>,
+    <span class="key">"unitCode"</span>: <span class="str">"MTK"</span>
+  },
+  <span class="key">"numberOfBedrooms"</span>: <span class="num">5</span>,
+  <span class="key">"numberOfBathroomsTotal"</span>: <span class="num">3</span>,
+  <span class="key">"numberOfRooms"</span>: <span class="num">9</span>
+}</pre>
+
+      <div class="divider"></div>
+
+      <div class="json-label">Blank template — copy and fill for each listing</div>
+<pre>{
+  <span class="key">"@context"</span>: <span class="str">"https://schema.org"</span>,
+  <span class="key">"@type"</span>: <span class="str">"[Residence | Apartment | SingleFamilyResidence]"</span>,
+  <span class="key">"name"</span>: <span class="str">"[REPLACE: property headline]"</span>,
+  <span class="key">"address"</span>: {
+    <span class="key">"@type"</span>: <span class="str">"PostalAddress"</span>,
+    <span class="key">"streetAddress"</span>: <span class="str">"[REPLACE: street]"</span>,
+    <span class="key">"addressLocality"</span>: <span class="str">"London"</span>,
+    <span class="key">"addressRegion"</span>: <span class="str">"[REPLACE: area e.g. Millbrook Park]"</span>,
+    <span class="key">"postalCode"</span>: <span class="str">"[REPLACE: postcode]"</span>,
+    <span class="key">"addressCountry"</span>: <span class="str">"GB"</span>
+  },
+  <span class="key">"description"</span>: <span class="str">"[REPLACE: listing description]"</span>,
+  <span class="key">"photo"</span>: <span class="str">"[REPLACE: primary image URL]"</span>,
+  <span class="key">"mainEntityOfPage"</span>: {
+    <span class="key">"@type"</span>: <span class="str">"ItemPage"</span>,
+    <span class="key">"@id"</span>: <span class="str">"[REPLACE: full canonical URL of listing page]"</span>
+  },
+  <span class="key">"floorSize"</span>: {
+    <span class="key">"@type"</span>: <span class="str">"QuantitativeValue"</span>,
+    <span class="key">"value"</span>: <span class="str">"[REPLACE: sq metres]"</span>,
+    <span class="key">"unitCode"</span>: <span class="str">"MTK"</span>
+  },
+  <span class="key">"numberOfBedrooms"</span>: <span class="str">"[REPLACE: beds]"</span>,
+  <span class="key">"numberOfBathroomsTotal"</span>: <span class="str">"[REPLACE: baths]"</span>,
+  <span class="key">"numberOfRooms"</span>: <span class="str">"[REPLACE: total rooms]"</span>
+}</pre>
+      <div class="validate-bar">✅ Validate at <a href="https://validator.schema.org" target="_blank">validator.schema.org</a></div>
+    </div>
+  </div>
+
+  <!-- ===================== ABOUT US ===================== -->
+  <div class="section" id="about">
+    <div class="section-header">
+      <span class="section-icon">👤</span>
+      <div>
+        <div class="section-title">About Us Page Schema</div>
+        <div class="section-subtitle">Person + RealEstateAgent · https://www.aaronshohetproperty.com/about-us</div>
+      </div>
+      <span class="tag tag-ready">Ready to use</span>
+    </div>
+    <div class="section-body">
+      <div class="note">
+        Uses a <strong>Person</strong> schema for Aaron Shohet (the named individual agent) nested within the organisation.
+        This helps Google understand the individual behind the brand — strong for local SEO and E-E-A-T signals.
+      </div>
+      <div class="json-label">Ready-to-paste JSON</div>
+<pre>{
+  <span class="key">"@context"</span>: <span class="str">"https://schema.org"</span>,
+  <span class="key">"@type"</span>: <span class="str">"AboutPage"</span>,
+  <span class="key">"url"</span>: <span class="str">"https://www.aaronshohetproperty.com/about-us"</span>,
+  <span class="key">"name"</span>: <span class="str">"About Aaron Shohet Property"</span>,
+  <span class="key">"description"</span>: <span class="str">"Aaron Shohet Property is a proudly independent estate agent specialising in the sale and rental of newbuild resale property in Millbrook Park, Mill Hill and Hertfordshire."</span>,
+  <span class="key">"about"</span>: {
+    <span class="key">"@type"</span>: <span class="str">"RealEstateAgent"</span>,
+    <span class="key">"name"</span>: <span class="str">"Aaron Shohet Property"</span>,
+    <span class="key">"legalName"</span>: <span class="str">"Jash Homes Ltd"</span>,
+    <span class="key">"url"</span>: <span class="str">"https://www.aaronshohetproperty.com"</span>,
+    <span class="key">"telephone"</span>: <span class="str">"+447388778139"</span>,
+    <span class="key">"email"</span>: <span class="str">"aaron@aaronshohetproperty.com"</span>,
+    <span class="key">"address"</span>: {
+      <span class="key">"@type"</span>: <span class="str">"PostalAddress"</span>,
+      <span class="key">"streetAddress"</span>: <span class="str">"82 Bittacy Hill"</span>,
+      <span class="key">"addressLocality"</span>: <span class="str">"London"</span>,
+      <span class="key">"addressRegion"</span>: <span class="str">"Millbrook Park"</span>,
+      <span class="key">"postalCode"</span>: <span class="str">"NW7 1TH"</span>,
+      <span class="key">"addressCountry"</span>: <span class="str">"GB"</span>
+    },
+    <span class="key">"employee"</span>: {
+      <span class="key">"@type"</span>: <span class="str">"Person"</span>,
+      <span class="key">"name"</span>: <span class="str">"Aaron Shohet"</span>,
+      <span class="key">"jobTitle"</span>: <span class="str">"Director &amp; Principal Agent"</span>,
+      <span class="key">"email"</span>: <span class="str">"aaron@aaronshohetproperty.com"</span>,
+      <span class="key">"telephone"</span>: <span class="str">"+447388778139"</span>,
+      <span class="key">"worksFor"</span>: {
+        <span class="key">"@type"</span>: <span class="str">"Organization"</span>,
+        <span class="key">"name"</span>: <span class="str">"Aaron Shohet Property"</span>
+      }
+    }
+  }
+}</pre>
+      <div class="validate-bar">✅ Validate at <a href="https://validator.schema.org" target="_blank">validator.schema.org</a></div>
+    </div>
+  </div>
+
+  <!-- ===================== SERVICES ===================== -->
+  <div class="section" id="services">
+    <div class="section-header">
+      <span class="section-icon">⚙️</span>
+      <div>
+        <div class="section-title">Services Page Schema</div>
+        <div class="section-subtitle">Service · https://www.aaronshohetproperty.com/services</div>
+      </div>
+      <span class="tag tag-ready">Ready to use</span>
+    </div>
+    <div class="section-body">
+      <div class="note">
+        Uses <strong>hasOfferCatalog</strong> to enumerate the core services from the site (Valuations, Sales, Lettings, Property Management, Corporate Relocation, Investment Property).
+      </div>
+      <div class="json-label">Ready-to-paste JSON</div>
+<pre>{
+  <span class="key">"@context"</span>: <span class="str">"https://schema.org"</span>,
+  <span class="key">"@type"</span>: <span class="str">"RealEstateAgent"</span>,
+  <span class="key">"name"</span>: <span class="str">"Aaron Shohet Property"</span>,
+  <span class="key">"url"</span>: <span class="str">"https://www.aaronshohetproperty.com/services"</span>,
+  <span class="key">"telephone"</span>: <span class="str">"+447388778139"</span>,
+  <span class="key">"email"</span>: <span class="str">"aaron@aaronshohetproperty.com"</span>,
+  <span class="key">"hasOfferCatalog"</span>: {
+    <span class="key">"@type"</span>: <span class="str">"OfferCatalog"</span>,
+    <span class="key">"name"</span>: <span class="str">"Property Services"</span>,
+    <span class="key">"itemListElement"</span>: [
+      {
+        <span class="key">"@type"</span>: <span class="str">"Offer"</span>,
+        <span class="key">"itemOffered"</span>: {
+          <span class="key">"@type"</span>: <span class="str">"Service"</span>,
+          <span class="key">"name"</span>: <span class="str">"Property Valuations"</span>,
+          <span class="key">"description"</span>: <span class="str">"Free instant online property valuation for Millbrook Park and Mill Hill properties."</span>
+        }
+      },
+      {
+        <span class="key">"@type"</span>: <span class="str">"Offer"</span>,
+        <span class="key">"itemOffered"</span>: {
+          <span class="key">"@type"</span>: <span class="str">"Service"</span>,
+          <span class="key">"name"</span>: <span class="str">"Property Sales"</span>,
+          <span class="key">"description"</span>: <span class="str">"Residential property sales in Millbrook Park, Mill Hill and Hertfordshire."</span>
+        }
+      },
+      {
+        <span class="key">"@type"</span>: <span class="str">"Offer"</span>,
+        <span class="key">"itemOffered"</span>: {
+          <span class="key">"@type"</span>: <span class="str">"Service"</span>,
+          <span class="key">"name"</span>: <span class="str">"Lettings"</span>,
+          <span class="key">"description"</span>: <span class="str">"Residential lettings and rental property management in North London."</span>
+        }
+      },
+      {
+        <span class="key">"@type"</span>: <span class="str">"Offer"</span>,
+        <span class="key">"itemOffered"</span>: {
+          <span class="key">"@type"</span>: <span class="str">"Service"</span>,
+          <span class="key">"name"</span>: <span class="str">"Property Management"</span>,
+          <span class="key">"description"</span>: <span class="str">"Full rental property management service for landlords."</span>
+        }
+      },
+      {
+        <span class="key">"@type"</span>: <span class="str">"Offer"</span>,
+        <span class="key">"itemOffered"</span>: {
+          <span class="key">"@type"</span>: <span class="str">"Service"</span>,
+          <span class="key">"name"</span>: <span class="str">"Corporate Relocation"</span>,
+          <span class="key">"description"</span>: <span class="str">"Comprehensive corporate relocation service for national and international job moves."</span>
+        }
+      },
+      {
+        <span class="key">"@type"</span>: <span class="str">"Offer"</span>,
+        <span class="key">"itemOffered"</span>: {
+          <span class="key">"@type"</span>: <span class="str">"Service"</span>,
+          <span class="key">"name"</span>: <span class="str">"Investment Property Sourcing"</span>,
+          <span class="key">"description"</span>: <span class="str">"Bespoke investment property sourcing service to grow your property portfolio."</span>
+        }
+      }
+    ]
+  }
+}</pre>
+      <div class="validate-bar">✅ Validate at <a href="https://validator.schema.org" target="_blank">validator.schema.org</a></div>
+    </div>
+  </div>
+
+  <!-- ===================== VALUATION ===================== -->
+  <div class="section" id="valuation">
+    <div class="section-header">
+      <span class="section-icon">📊</span>
+      <div>
+        <div class="section-title">Valuation Page Schema</div>
+        <div class="section-subtitle">Service · https://www.aaronshohetproperty.com/valuation</div>
+      </div>
+      <span class="tag tag-ready">Ready to use</span>
+    </div>
+    <div class="section-body">
+      <div class="note">
+        Marks up the valuation page as a <strong>Service</strong> offered free of charge — helpful for rich result eligibility
+        and communicating the free-valuation offer clearly to search engines.
+      </div>
+      <div class="json-label">Ready-to-paste JSON</div>
+<pre>{
+  <span class="key">"@context"</span>: <span class="str">"https://schema.org"</span>,
+  <span class="key">"@type"</span>: <span class="str">"Service"</span>,
+  <span class="key">"name"</span>: <span class="str">"Free Property Valuation — Aaron Shohet Property"</span>,
+  <span class="key">"url"</span>: <span class="str">"https://www.aaronshohetproperty.com/valuation"</span>,
+  <span class="key">"description"</span>: <span class="str">"Get a free instant online property valuation for your home in Millbrook Park, Mill Hill or Hertfordshire with Aaron Shohet Property."</span>,
+  <span class="key">"provider"</span>: {
+    <span class="key">"@type"</span>: <span class="str">"RealEstateAgent"</span>,
+    <span class="key">"name"</span>: <span class="str">"Aaron Shohet Property"</span>,
+    <span class="key">"url"</span>: <span class="str">"https://www.aaronshohetproperty.com"</span>,
+    <span class="key">"telephone"</span>: <span class="str">"+447388778139"</span>,
+    <span class="key">"email"</span>: <span class="str">"aaron@aaronshohetproperty.com"</span>
+  },
+  <span class="key">"areaServed"</span>: [
+    <span class="str">"Millbrook Park"</span>,
+    <span class="str">"Mill Hill"</span>,
+    <span class="str">"Hertfordshire"</span>,
+    <span class="str">"London NW7"</span>
+  ],
+  <span class="key">"offers"</span>: {
+    <span class="key">"@type"</span>: <span class="str">"Offer"</span>,
+    <span class="key">"price"</span>: <span class="str">"0"</span>,
+    <span class="key">"priceCurrency"</span>: <span class="str">"GBP"</span>,
+    <span class="key">"description"</span>: <span class="str">"Free instant online property valuation"</span>
+  }
+}</pre>
+      <div class="validate-bar">✅ Validate at <a href="https://validator.schema.org" target="_blank">validator.schema.org</a> · <a href="https://search.google.com/test/rich-results" target="_blank">Google Rich Results Test</a></div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
